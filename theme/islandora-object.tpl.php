@@ -1,5 +1,6 @@
 <?php
 
+// @codingStandardsIgnoreStart
 /**
  * @file
  * The default object view.
@@ -57,6 +58,7 @@
  * do something here
  * }
  */
+// @codingStandardsIgnoreEnd
 ?>
 <div class="islandora-object islandora">
   <h2><?php print t('Details'); ?></h2>
