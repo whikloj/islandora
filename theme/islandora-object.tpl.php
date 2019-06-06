@@ -46,7 +46,6 @@
  * and each element has an array of values.
  * dc.title can have none, one or many titles
  * this is the case for all dc elements.
- *
  */
 ?>
 <div class="islandora-object islandora">
