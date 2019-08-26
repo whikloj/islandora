@@ -15,6 +15,7 @@
  *
  * @return array
  *   Drupal form.
+ *
  * @throws \Exception
  *   Thrown by theme() function.
  */

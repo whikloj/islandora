@@ -68,8 +68,6 @@ class MimeDetect {
   /**
    * Extension exceptions.
    *
-   * @deprecated
-   *
    * @var array
    */
   protected $extensionExceptions = array(

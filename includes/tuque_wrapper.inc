@@ -82,16 +82,19 @@ function islandora_invoke_datastream_hooks($hook, array $models, $dsid) {
 class IslandoraFedoraRepository extends FedoraRepository {
   /**
    * Class name.
+   *
    * @var string
    */
   protected $queryClass = 'IslandoraRepositoryQuery';
   /**
    * Class name.
+   *
    * @var string
    */
   protected $newObjectClass = 'IslandoraNewFedoraObject';
   /**
    * Class name.
+   *
    * @var string
    */
   protected $objectClass = 'IslandoraFedoraObject';
@@ -193,16 +196,19 @@ class IslandoraRepositoryQuery extends RepositoryQuery {}
 class IslandoraNewFedoraObject extends NewFedoraObject {
   /**
    * Class name.
+   *
    * @var string
    */
   protected $newFedoraDatastreamClass = 'IslandoraNewFedoraDatastream';
   /**
    * Class name.
+   *
    * @var string
    */
   protected $fedoraDatastreamClass = 'IslandoraFedoraDatastream';
   /**
    * Class name.
+   *
    * @var string
    */
   protected $fedoraRelsExtClass = 'IslandoraFedoraRelsExt';
@@ -214,16 +220,19 @@ class IslandoraNewFedoraObject extends NewFedoraObject {
 class IslandoraFedoraObject extends FedoraObject {
   /**
    * Class name.
+   *
    * @var string
    */
   protected $newFedoraDatastreamClass = 'IslandoraNewFedoraDatastream';
   /**
    * Class name.
+   *
    * @var string
    */
   protected $fedoraDatastreamClass = 'IslandoraFedoraDatastream';
   /**
    * Class name.
+   *
    * @var string
    */
   protected $fedoraRelsExtClass = 'IslandoraFedoraRelsExt';
@@ -606,11 +615,13 @@ class IslandoraSimpleCache extends SimpleCache {}
 class IslandoraNewFedoraDatastream extends NewFedoraDatastream {
   /**
    * Class name.
+   *
    * @var string
    */
   protected $fedoraRelsIntClass = 'IslandoraFedoraRelsInt';
   /**
    * Class name.
+   *
    * @var string
    */
   protected $fedoraDatastreamVersionClass = 'IslandoraFedoraDatastreamVersion';
@@ -622,11 +633,13 @@ class IslandoraNewFedoraDatastream extends NewFedoraDatastream {
 class IslandoraFedoraDatastream extends FedoraDatastream {
   /**
    * Class name.
+   *
    * @var string
    */
   protected $fedoraRelsIntClass = 'IslandoraFedoraRelsInt';
   /**
    * Class name.
+   *
    * @var string
    */
   protected $fedoraDatastreamVersionClass = 'IslandoraFedoraDatastreamVersion';
@@ -704,11 +717,13 @@ class IslandoraFedoraDatastream extends FedoraDatastream {
 class IslandoraFedoraDatastreamVersion extends FedoraDatastreamVersion {
   /**
    * Class name.
+   *
    * @var string
    */
   protected $fedoraRelsIntClass = 'IslandoraFedoraRelsInt';
   /**
    * Class name.
+   *
    * @var string
    */
   protected $fedoraDatastreamVersionClass = 'IslandoraFedoraDatastreamVersion';
