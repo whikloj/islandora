@@ -1,9 +1,23 @@
 <?php
+
 /**
  * @file
  * Image server central configuration.
  */
 
+/**
+ * Image server configuration form.
+ *
+ * @param array $form
+ *   Drupal form.
+ * @param array $form_state
+ *   Drupal form state.
+ *
+ * @return array
+ *   Drupal form.
+ * @throws \Exception
+ *   Thrown by theme() function.
+ */
 function islandora_imageserver_admin_form(array $form, array &$form_state) {
   form_load_include($form_state, 'inc', 'islandora', 'includes/utilities');
   $settings = islandora_imageserver_get_settings();
@@ -91,9 +105,8 @@ function islandora_imageserver_admin_form(array $form, array &$form_state) {
  */
 function islandora_imageserver_admin_submit_reset() {
   variable_del('islandora_imageserver_settings');
-  drupal_set_message('Settings reset.', 'status');
+  drupal_set_message(t('Settings reset.'), 'status');
 }
-
 
 /**
  * Implements hook_form_submit().
@@ -117,7 +130,7 @@ function islandora_imageserver_admin_form_submit(array $form, array &$form_state
     }
     variable_set('islandora_imageserver_settings', $settings);
   }
-  drupal_set_message("Settings saved successfully.", 'status');
+  drupal_set_message(t("Settings saved successfully."), 'status');
 }
 
 /**
@@ -138,10 +151,10 @@ function islandora_imageserver_admin_ajax_url(array $form, array $form_state) {
 /**
  * Gets a message which describes if Adore-Djatoka is accessible.
  *
- * @param array $settings
- *   The image server settings.
+ * @param array $form_state
+ *   The current form state.
  *
- * @see islandora_imageserver_get_settings().
+ * @see islandora_imageserver_get_settings()
  *
  * @return string
  *   A message describing the accessibility of the Adore-Djatoka image resolver.
@@ -166,8 +179,8 @@ function islandora_imageserver_admin_form_access_message(array &$form_state) {
     ));
   }
   elseif ($type == 'iiif') {
-    $url = url(rtrim($url, '/')
-      , array(
+    $url = url(rtrim($url, '/'),
+      array(
         'absolute' => TRUE,
       )
     );
@@ -178,14 +191,14 @@ function islandora_imageserver_admin_form_access_message(array &$form_state) {
     if ($result->code == 200) {
       $confirmation_message = theme_image(array(
         'path' => 'misc/watchdog-ok.png',
-        'attributes' => array()
+        'attributes' => array(),
       ));
       $confirmation_message .= t('Successfully connected to image server.');
     }
     else {
       $confirmation_message = theme_image(array(
         'path' => 'misc/watchdog-error.png',
-        'attributes' => array()
+        'attributes' => array(),
       ));
       $confirmation_message .= t('Unable to connect to image server at !path', array(
         '!path' => $url,
@@ -219,8 +232,9 @@ function islandora_imageserver_get_settings() {
  *
  * @param array $form_state
  *   Drupal form state.
- * @param $name
+ * @param string $name
  *   Name of the form element/settings key.
+ *
  * @return mixed
  *   The Form value or currently saved value.
  */
@@ -240,6 +254,7 @@ function islandora_imageserver_get_default_value(array &$form_state, $name) {
  *   The dsid to return.
  * @param string $authtoken
  *   The authentication token.
+ *
  * @return mixed
  *   The token replaced string.
  */

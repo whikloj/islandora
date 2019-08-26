@@ -189,8 +189,8 @@ function islandora_update_7003() {
       $new_settings = $openseadragon_settings;
     }
     else {
-      // We could not migrate your settings to the new place. This stops the other
-      // two modules from deleting your settings.
+      // We could not migrate your settings to the new place. This stops the
+      // other two modules from deleting your settings.
       throw new DrupalUpdateException('Islandora image server settings could NOT be configured automatically, please set them manually at Admin -> Islandora -> Image Server configuration and then run updates again.');
     }
   }
@@ -202,8 +202,8 @@ function islandora_update_7003() {
   }
   if (isset($new_settings)) {
     if (isset($new_settings['iiif_identifer']) && !empty($new_settings['iiif_identifer'])) {
-      // This will only have the back half of the token, prepend islandora to it.
-      $new_settings['iiif_identifer'] = "[islandora:" + $new_settings['iiif_identifer'];
+      // This will only have the back half of the token, prepend islandora.
+      $new_settings['iiif_identifer'] = "[islandora:" . $new_settings['iiif_identifer'];
     }
     if ($new_settings['type'] == 'djatoka' && !preg_match('~resolver$~', $new_settings['url'])) {
       // IABV javascript added resolver to URL, Openseadragon did not.
