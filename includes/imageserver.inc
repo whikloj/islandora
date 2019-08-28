@@ -24,17 +24,7 @@ function islandora_imageserver_admin_form(array $form, array &$form_state) {
   $settings = islandora_imageserver_get_settings();
 
   $form = array(
-    'type' => array(
-      '#type' => 'select',
-      '#title' => t('Image Server'),
-      '#description' => t('Select the image server to configure, used by the Paged Content, OpenSeadragon, & Internet Archive Bookreader modules.'),
-      '#default_value' => $settings['type'],
-      '#options' => array(
-        'none' => t('No image server configured'),
-        'iiif' => t('IIIF image server'),
-        'djatoka' => t('Adore-Djatoka image server'),
-      ),
-    ),
+    'type' => islandora_imageserver_get_type_selectbox(FALSE),
     'url' => array(
       '#prefix' => '<div id="islandora-imageserver-path-wrapper">',
       '#suffix' => '</div>',
@@ -89,12 +79,13 @@ function islandora_imageserver_admin_form(array $form, array &$form_state) {
         '#type' => 'submit',
         '#value' => t('Save configuration'),
         '#weight' => 0,
+        '#name' => 'save_config',
       ),
       'reset' => array(
         '#type' => 'submit',
         '#value' => t('Reset to defaults'),
         '#weight' => 1,
-        '#submit' => array('islandora_imageserver_admin_submit_reset'),
+        '#name' => 'reset_config',
       ),
     ),
   );
@@ -102,22 +93,50 @@ function islandora_imageserver_admin_form(array $form, array &$form_state) {
 }
 
 /**
- * Delete configured settings, returning us to default settings.
+ * Settings reset confirmation form.
+ *
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal $form_state.
+ *
+ * @return mixed
+ *   The created form.
  */
-function islandora_imageserver_admin_submit_reset() {
-  variable_del('islandora_imageserver_settings');
+function islandora_imageserver_admin_reset_confirm_form(array $form, array &$form_state) {
+  $form = array(
+    'reset_confirm' => array(
+      '#type' => 'hidden',
+      '#value' => 1,
+    ),
+  );
+  return confirm_form(
+    $form,
+    t("Do you really want to reset the Image Server settings?"),
+    'admin/islandora/image_server',
+    t("This action cannot be undone."),
+    t("Reset")
+  );
+}
+
+/**
+ * Implements hook_form_submit().
+ */
+function islandora_imageserver_admin_reset_confirm_form_submit(array $form, array &$form_state) {
+  variable_set('islandora_imageserver_settings', islandora_imageserver_get_default_settings());
   drupal_set_message(t('Settings reset.'), 'status');
+  drupal_goto('admin/islandora/image_server');
 }
 
 /**
  * Implements hook_form_submit().
  */
 function islandora_imageserver_admin_form_submit(array $form, array &$form_state) {
-  $type = $form_state['values']['type'];
-  if ($type == 'none') {
-    variable_del('islandora_imageserver_settings');
+  if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == 'reset_config') {
+    drupal_goto('admin/islandora/image_server/reset');
   }
   else {
+    $type = $form_state['values']['type'];
     $settings = islandora_imageserver_get_settings();
     $settings['type'] = $type;
     $settings['url'] = rtrim($form_state['values']['url'], '/');
@@ -130,8 +149,8 @@ function islandora_imageserver_admin_form_submit(array $form, array &$form_state
       $settings['iiif_identifier'] = ISLANDORA_IMAGESERVER_DEFAULT_TOKEN;
     }
     variable_set('islandora_imageserver_settings', $settings);
+    drupal_set_message(t("Settings saved successfully."), 'status');
   }
-  drupal_set_message(t("Settings saved successfully."), 'status');
 }
 
 /**
@@ -167,7 +186,7 @@ function islandora_imageserver_admin_form_access_message(array &$form_state) {
   $url = islandora_imageserver_get_default_value($form_state, 'url');
 
   if ($type == 'djatoka') {
-    $url = url("{$url}", array(
+    $url = url($url, array(
       'absolute' => TRUE,
       'query' => array(
         'url_ver' => 'Z39.88-2004',
@@ -185,6 +204,10 @@ function islandora_imageserver_admin_form_access_message(array &$form_state) {
         'absolute' => TRUE,
       )
     );
+  }
+  else {
+    // None, so don't confirm.
+    return "";
   }
 
   if (isset($url) && !empty($url)) {
@@ -216,16 +239,26 @@ function islandora_imageserver_admin_form_access_message(array &$form_state) {
  *   Configuration to access the image server.
  */
 function islandora_imageserver_get_settings() {
-  $defaults = array(
+  $defaults = islandora_imageserver_get_default_settings();
+
+  $settings = variable_get('islandora_imageserver_settings', array()) + $defaults;
+
+  return $settings;
+}
+
+/**
+ * Return the default image server settings.
+ *
+ * @return array
+ *   The settings.
+ */
+function islandora_imageserver_get_default_settings() {
+  return array(
     'type' => 'none',
     'url' => '',
     'iiif_token_header' => FALSE,
     'iiif_identifier' => ISLANDORA_IMAGESERVER_DEFAULT_TOKEN,
   );
-
-  $settings = variable_get('islandora_imageserver_settings', array()) + $defaults;
-
-  return $settings;
 }
 
 /**
@@ -273,4 +306,30 @@ function islandora_imageserver_get_identifier($string_token, $pid, $dsid, $autht
     ),
   );
   return token_replace($string_token, $parts);
+}
+
+/**
+ * Create the select box form element with the currently configured type.
+ *
+ * @param bool $disabled
+ *   Whether the element should be disabled.
+ *
+ * @return array
+ *   The form element.
+ */
+function islandora_imageserver_get_type_selectbox($disabled = TRUE) {
+  $settings = islandora_imageserver_get_settings();
+  $description = $disabled ? t("Configured at Admin ≫ Islandora ≫ Image server configuration.") : t("Select the image server to configure.");
+  return array(
+    '#type' => 'select',
+    '#title' => t('Image Server'),
+    '#description' => $description,
+    '#default_value' => $settings['type'],
+    '#disabled' => $disabled,
+    '#options' => array(
+      'none' => t('No image server configured'),
+      'iiif' => t('IIIF image server'),
+      'djatoka' => t('Adore-Djatoka image server'),
+    ),
+  );
 }

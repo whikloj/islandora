@@ -428,6 +428,15 @@ function islandora_menu() {
     'type' => MENU_NORMAL_ITEM,
     'file' => 'includes/imageserver.inc',
   );
+  $items['admin/islandora/image_server/reset'] = array(
+    'title' => 'Image server configuration reset confirmation',
+    'description' => 'Image server configuration reset confirmation',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('islandora_imageserver_admin_reset_confirm_form'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/imageserver.inc',
+  );
 
   return $items;
 }

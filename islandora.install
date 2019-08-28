@@ -167,7 +167,7 @@ function islandora_update_7003() {
     else {
       $openseadragon_settings['url'] = variable_get('islandora_openseadragon_iiif_url', 'iiif');
       $openseadragon_settings['iiif_token_header'] = variable_get('islandora_openseadragon_iiif_token_header', FALSE);
-      $openseadragon_settings['iiif_identifier'] = explode(":", variable_get('islandora_openseadragon_iiif_identifier', '[islandora_openseadragon:url_token]'))[1];
+      $openseadragon_settings['iiif_identifier'] = str_replace('[islandora_openseadragon:', '[islandora:', variable_get('islandora_openseadragon_iiif_identifier', '[islandora_openseadragon:url_token]'));
     }
   }
   if (module_exists('islandora_internet_archive_bookreader')) {
@@ -180,7 +180,7 @@ function islandora_update_7003() {
     else {
       $iabv_settings['url'] = variable_get('islandora_internet_archive_bookreader_iiif_url', 'iiif');
       $iabv_settings['iiif_token_header'] = variable_get('islandora_internet_archive_bookreader_iiif_token_header', FALSE);
-      $iabv_settings['iiif_identifier'] = explode(":", variable_get('islandora_internet_archive_bookreader_iiif_identifier', '[islandora_iareader:url_token]'))[1];
+      $iabv_settings['iiif_identifier'] = str_replace('[islandora_iareader:', '[islandora:', variable_get('islandora_internet_archive_bookreader_iiif_identifier', '[islandora_iareader:url_token]'));
     }
   }
   if (isset($openseadragon_settings) && isset($iabv_settings)) {
