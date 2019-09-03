@@ -128,7 +128,7 @@ function islandora_imageserver_admin_reset_confirm_form(array $form, array &$for
  * Implements hook_form_submit().
  */
 function islandora_imageserver_admin_reset_confirm_form_submit(array $form, array &$form_state) {
-  variable_set('islandora_imageserver_settings', islandora_imageserver_get_default_settings());
+  variable_del('islandora_imageserver_settings');
   drupal_set_message(t('Settings reset.'), 'status');
   $form_state['redirect'] = 'admin/islandora/image_server';
 }
