@@ -201,10 +201,6 @@ function islandora_update_7003() {
     $new_settings = $iabv_settings;
   }
   if (isset($new_settings)) {
-    if (isset($new_settings['iiif_identifer']) && !empty($new_settings['iiif_identifer'])) {
-      // This will only have the back half of the token, prepend islandora.
-      $new_settings['iiif_identifer'] = "[islandora:" . $new_settings['iiif_identifer'];
-    }
     if ($new_settings['type'] == 'djatoka' && !preg_match('~resolver$~', $new_settings['url'])) {
       // IABV javascript added resolver to URL, Openseadragon did not.
       $new_settings['url'] = rtrim($new_settings['url'], '/') . '/resolver';
