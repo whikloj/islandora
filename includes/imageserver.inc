@@ -79,17 +79,28 @@ function islandora_imageserver_admin_form(array $form, array &$form_state) {
         '#type' => 'submit',
         '#value' => t('Save configuration'),
         '#weight' => 0,
-        '#name' => 'save_config',
       ),
       'reset' => array(
         '#type' => 'submit',
         '#value' => t('Reset to defaults'),
         '#weight' => 1,
-        '#name' => 'reset_config',
+        '#submit' => array('islandora_imageserver_admin_submit_reset'),
       ),
     ),
   );
   return $form;
+}
+
+/**
+ * Redirect to Reset form.
+ *
+ * @param array $form
+ *   Drupal form.
+ * @param array $form_state
+ *   Drupal form state.
+ */
+function islandora_imageserver_admin_submit_reset(array $form, array &$form_state) {
+  $form_state['redirect'] = 'admin/islandora/image_server/reset';
 }
 
 /**
@@ -104,12 +115,6 @@ function islandora_imageserver_admin_form(array $form, array &$form_state) {
  *   The created form.
  */
 function islandora_imageserver_admin_reset_confirm_form(array $form, array &$form_state) {
-  $form = array(
-    'reset_confirm' => array(
-      '#type' => 'hidden',
-      '#value' => 1,
-    ),
-  );
   return confirm_form(
     $form,
     t("Do you really want to reset the Image Server settings?"),
@@ -125,32 +130,27 @@ function islandora_imageserver_admin_reset_confirm_form(array $form, array &$for
 function islandora_imageserver_admin_reset_confirm_form_submit(array $form, array &$form_state) {
   variable_set('islandora_imageserver_settings', islandora_imageserver_get_default_settings());
   drupal_set_message(t('Settings reset.'), 'status');
-  drupal_goto('admin/islandora/image_server');
+  $form_state['redirect'] = 'admin/islandora/image_server';
 }
 
 /**
  * Implements hook_form_submit().
  */
 function islandora_imageserver_admin_form_submit(array $form, array &$form_state) {
-  if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == 'reset_config') {
-    drupal_goto('admin/islandora/image_server/reset');
+  $type = $form_state['values']['type'];
+  $settings = islandora_imageserver_get_settings();
+  $settings['type'] = $type;
+  $settings['url'] = rtrim($form_state['values']['url'], '/');
+  if ($type == 'iiif') {
+    $settings['iiif_token_header'] = (bool) $form_state['values']['iiif_token_header'];
+    $settings['iiif_identifier'] = $form_state['values']['iiif_identifier'];
   }
   else {
-    $type = $form_state['values']['type'];
-    $settings = islandora_imageserver_get_settings();
-    $settings['type'] = $type;
-    $settings['url'] = rtrim($form_state['values']['url'], '/');
-    if ($type == 'iiif') {
-      $settings['iiif_token_header'] = (bool) $form_state['values']['iiif_token_header'];
-      $settings['iiif_identifier'] = $form_state['values']['iiif_identifier'];
-    }
-    else {
-      $settings['iiif_token_header'] = FALSE;
-      $settings['iiif_identifier'] = ISLANDORA_IMAGESERVER_DEFAULT_TOKEN;
-    }
-    variable_set('islandora_imageserver_settings', $settings);
-    drupal_set_message(t("Settings saved successfully."), 'status');
+    $settings['iiif_token_header'] = FALSE;
+    $settings['iiif_identifier'] = ISLANDORA_IMAGESERVER_DEFAULT_TOKEN;
   }
+  variable_set('islandora_imageserver_settings', $settings);
+  drupal_set_message(t("Settings saved successfully."), 'status');
 }
 
 /**

@@ -84,7 +84,7 @@ Set the URL.
 
 If using IIIF choose to send token as a header and choose the token to use.
 
-Any [IIIF](http://iiif.io) image server can be used the the IIIF tile source. The IIIF tile source provides an templated identifier which the IIIF server must be configured to resolve. This could be the full URL to the datastream to be displayed or something more complex. The IIIF server needs to be configured to resolve this full URL to retrieve the image.
+Any [IIIF](http://iiif.io) image server can be used with the IIIF tile source. The IIIF tile source provides a templated identifier which the IIIF server must be configured to resolve. This could be the full URL to the datastream to be displayed or something more complex.
 
 The [Cantaloupe 🍈](https://medusa-project.github.io/cantaloupe/) IIIF image server can be configured to resolve these identifiers using the [`HttpResolver`](https://medusa-project.github.io/cantaloupe/manual/3.3/resolvers.html#HttpResolver) with no prefix specified.
 
