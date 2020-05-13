@@ -26,6 +26,16 @@ class IslandoraSettingsForm extends ConfigFormBase {
   const GEMINI_URL = 'gemini_url';
   const GEMINI_PSEUDO = 'gemini_pseudo_bundles';
   const FEDORA_URL = 'fedora_url';
+  const TIME_INTERVALS = [
+    'sec',
+    'second',
+    'min',
+    'minute',
+    'hour',
+    'week',
+    'month',
+    'year',
+  ];
 
   /**
    * To list the available bundle types.
@@ -89,7 +99,9 @@ class IslandoraSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('JWT Expiry'),
       '#default_value' => $config->get(self::JWT_EXPIRY),
-      '#description' => 'Eg: 60, "2 days", "10h", "7d". A numeric value is interpreted as a seconds count. If you use a string be sure you provide the time units (days, hours, etc), otherwise milliseconds unit is used by default ("120" is equal to "120ms").',
+      '#description' => $this->t('A positive time interval expression. Eg: "60 secs", "2 days", "10 hours", "7 weeks". Be sure you provide the time units (@unit), plurals are accepted.',
+        ['@unit' => implode(self::TIME_INTERVALS, ", ")]
+      ),
     ];
 
     $form[self::GEMINI_URL] = [
@@ -165,7 +177,8 @@ class IslandoraSettingsForm extends ConfigFormBase {
     }
 
     // Validate jwt expiry as a valid time string.
-    $expiry = $form_state->getValue(self::JWT_EXPIRY);
+    $expiry = trim($form_state->getValue(self::JWT_EXPIRY));
+    $expiry = strtolower($expiry);
     if (strtotime($expiry) === FALSE) {
       $form_state->setErrorByName(
         self::JWT_EXPIRY,
@@ -174,6 +187,28 @@ class IslandoraSettingsForm extends ConfigFormBase {
           ['@expiry' => $expiry]
         )
       );
+    }
+    elseif (substr($expiry, 0, 1) == "-") {
+      $form_state->setErrorByName(
+        self::JWT_EXPIRY,
+        $this->t('Time or interval expression cannot be negative')
+          );
+    }
+    elseif (intval($expiry) === 0) {
+      $form_state->setErrorByName(
+        self::JWT_EXPIRY,
+        $this->t('No numeric interval specified, for example "1 day"')
+          );
+    }
+    else {
+      if (!preg_match("/\b(" . implode(self::TIME_INTERVALS, "|") . ")s?\b/", $expiry)) {
+        $form_state->setErrorByName(
+          self::JWT_EXPIRY,
+          $this->t("No time interval found, please include one of (@int). Plurals are also accepted.",
+            ['@int' => implode(self::TIME_INTERVALS, ", ")]
+          )
+        );
+      }
     }
 
     // Needed for the elseif below.
