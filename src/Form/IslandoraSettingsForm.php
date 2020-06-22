@@ -65,10 +65,8 @@ class IslandoraSettingsForm extends ConfigFormBase {
     $this->setConfigFactory($config_factory);
     $this->entityTypeBundleInfo = $entity_type_bundle_info;
     $this->brokerPassword = $this->config(self::CONFIG_NAME)->get(self::BROKER_PASSWORD);
-  }I've pulled this down and tested it pretty thoroughly.  Works as advertised.  Form fails if you don't add a password.  If you've already entered a password and don't enter one, it uses the old one.
-
-After setting up activemq to use basic auth, I could successfully connect to the broker and publish messages from Drupal.
-
+  }
+  
   /**
    * {@inheritdoc}
    */
