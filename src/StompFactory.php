@@ -25,13 +25,16 @@ class StompFactory {
     // Get broker url from config.
     $settings = $config->get(IslandoraSettingsForm::CONFIG_NAME);
     $brokerUrl = $settings->get(IslandoraSettingsForm::BROKER_URL);
-
+    $brokerUser = $settings->get(IslandoraSettingsForm::BROKER_USER);
     // Try a sensible default if one hasn't been configured.
     if (empty($brokerUrl)) {
       $brokerUrl = "tcp://localhost:61613";
     }
 
     $client = new Client($brokerUrl);
+    if ($brokerUser) {
+      $client->setLogin($brokerUser, $settings->get(IslandoraSettingsForm::BROKER_PASSWORD));
+    }
     return new StatefulStomp($client);
   }
 
