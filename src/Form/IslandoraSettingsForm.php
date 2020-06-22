@@ -66,7 +66,7 @@ class IslandoraSettingsForm extends ConfigFormBase {
     $this->entityTypeBundleInfo = $entity_type_bundle_info;
     $this->brokerPassword = $this->config(self::CONFIG_NAME)->get(self::BROKER_PASSWORD);
   }
-  
+
   /**
    * {@inheritdoc}
    */
