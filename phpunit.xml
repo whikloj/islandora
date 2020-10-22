@@ -62,6 +62,9 @@
     <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener">
     </listener>
   </listeners>
+  <logging>
+    <log type="coverage-clover" target="clover.xml"/>
+  </logging>
   <!-- Filter for coverage reports. -->
   <filter>
     <whitelist>

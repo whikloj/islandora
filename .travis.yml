@@ -21,13 +21,13 @@ branches:
   only:
     - /^8.x/
     - /master/
+    - /add-/
 
 before_install:
   - export SCRIPT_DIR=$HOME/islandora/.scripts
   - export DRUPAL_DIR=/opt/drupal
   - export PHPUNIT_FILE=$TRAVIS_BUILD_DIR/phpunit.xml
   - export COMPOSER_PATH="/home/travis/.phpenv/versions/$TRAVIS_PHP_VERSION/bin/composer"
-  - phpenv config-rm xdebug.ini
 
 install:
   - git clone https://github.com/Islandora/documentation.git $HOME/islandora
@@ -47,6 +47,9 @@ script:
   - $SCRIPT_DIR/travis_scripts.sh
   - cd $DRUPAL_DIR/web/core
   - $DRUPAL_DIR/vendor/bin/phpunit --verbose --testsuite "$TESTSUITE"
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 notifications:
   slack:
