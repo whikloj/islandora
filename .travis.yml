@@ -5,9 +5,12 @@ php:
   - 7.4
 
 env:
-  - TESTSUITE=kernel
-  - TESTSUITE=functional
-  - TESTSUITE=functional-javascript
+  - TESTSUITE=kernel DRUPAL_VERSION=8.9.11
+  - TESTSUITE=functional DRUPAL_VERSION=8.9.11
+  - TESTSUITE=functional-javascript DRUPAL_VERSION=8.9.11
+  - TESTSUITE=kernel DRUPAL_VERSION=9.1.1
+  - TESTSUITE=functional DRUPAL_VERSION=9.1.1
+  - TESTSUITE=functional-javascript DRUPAL_VERSION=9.1.1
 
 matrix:
     fast_finish: true
